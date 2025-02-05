@@ -4,7 +4,7 @@ import sqlite3
 import os
 import io
 from PIL import Image, ImageTk
-import fitz  # PyMuPDF pour les PDF
+import fitz  
 
 
 def initialize_db():
@@ -182,10 +182,10 @@ def download_selected_file():
     except IndexError:
         messagebox.showwarning("Avertissement", "Veuillez sélectionner un fichier à télécharger.")
 def import_database():
-    # Sélectionner la base de données à importer
+    
     file_path = filedialog.askopenfilename(title="Choisir une base de données", filetypes=[("Base de données SQLite", "*.db")])
     if not file_path:
-        return  # Si l'utilisateur annule, ne rien faire
+        return 
 
     try:
         # Connexion à la base de données existante
@@ -196,7 +196,7 @@ def import_database():
         conn_new = sqlite3.connect(file_path)
         cursor_new = conn_new.cursor()
 
-        # Vérification de la compatibilité des colonnes
+       
         cursor_new.execute("PRAGMA table_info(documents)")
         columns_new = [col[1] for col in cursor_new.fetchall()]
 
@@ -209,7 +209,7 @@ def import_database():
             conn_current.close()
             return
 
-        # Importation des données
+       
         cursor_new.execute("SELECT * FROM documents")
         rows = cursor_new.fetchall()
 
@@ -220,7 +220,7 @@ def import_database():
                     (row[1], row[2], row[3])
                 )
             except sqlite3.IntegrityError as e:
-                # Gérer les doublons ou autres erreurs
+                
                 print(f"Erreur lors de l'insertion : {e}")
 
         conn_current.commit()
@@ -229,14 +229,13 @@ def import_database():
         conn_new.close()
         conn_current.close()
 
-        # Rafraîchir l'affichage
+        
         show_files()
 
     except Exception as e:
         messagebox.showerror("Erreur", f"Erreur lors de l'importation de la base de données : {e}")
 
 
-# Initialisation
 window = tk.Tk()
 window.title("Gestionnaire de fichiers")
 window.geometry("800x600")
@@ -249,24 +248,20 @@ file_table.heading("Taille", text="Taille (octets)")
 file_table.pack(fill=tk.BOTH, expand=True)
 file_table.bind("<<TreeviewSelect>>", file_selected)
 
-# Création d'un conteneur pour la zone de visualisation
 display_frame = tk.Frame(window)
-display_frame.pack(fill=tk.BOTH, expand=True, pady=10)  # Centré verticalement avec un espacement
+display_frame.pack(fill=tk.BOTH, expand=True, pady=10)  
 
-# Ajout de la zone de visualisation dans le conteneur
 display_area = scrolledtext.ScrolledText(display_frame, wrap=tk.WORD, height=10)
 display_area.pack(fill=tk.BOTH, expand=True, padx=20, pady=10)  # Espacement autour de la zone
 
 db_size_label = tk.Label(window, text="Taille de la base de données : 0.00 Mo")
 db_size_label.pack()
 
-# Création d'un conteneur pour les boutons
 button_frame = tk.Frame(window)
-button_frame.pack(side=tk.TOP, pady=10)  # Centrer verticalement avec pady
+button_frame.pack(side=tk.TOP, pady=10)  
 
-# Ajouter les boutons dans le conteneur et les centrer horizontalement
 btn_add = tk.Button(button_frame, text="Ajouter un fichier", command=add_file)
-btn_add.pack(side=tk.LEFT, padx=5)  # Ajout d'un espacement horizontal
+btn_add.pack(side=tk.LEFT, padx=5)  
 
 btn_delete = tk.Button(button_frame, text="Supprimer le fichier", command=delete_selected_file)
 btn_delete.pack(side=tk.LEFT, padx=5)
@@ -275,7 +270,7 @@ btn_download = tk.Button(button_frame, text="Télécharger le fichier", command=
 btn_download.pack(side=tk.LEFT, padx=5)
 
 btn_import = tk.Button(button_frame, text="Importer une base de données", command=import_database)
-btn_import.pack(side=tk.LEFT, padx=5)  # Ajouter un bouton pour importer
+btn_import.pack(side=tk.LEFT, padx=5) 
 
 
 initialize_db()
